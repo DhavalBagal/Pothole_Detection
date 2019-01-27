@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1022000512347",
+    "firebase_url": "https://city-groom-163d6.firebaseio.com",
+    "project_id": "city-groom-163d6",
+    "storage_bucket": "city-groom-163d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022000512347:android:7626122e32ad3138",
+        "android_client_info": {
+          "package_name": "com.android.citygroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022000512347-o97jmpe36og4vfqpfcn930mpnm38eehb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.android.citygroom",
+            "certificate_hash": "1286fdf61cc1894bc036a063c4de32274d5b2324"
+          }
+        },
+        {
+          "client_id": "1022000512347-q7caodv5ao13hv8heecgg9d92b49nksj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD6wseSyJjVJT7qN-b1tOPF9l6fyArQQ4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022000512347-q7caodv5ao13hv8heecgg9d92b49nksj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
