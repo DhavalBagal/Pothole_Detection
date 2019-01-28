@@ -40,7 +40,7 @@ public class StreetrideSection extends Fragment {
                 locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
                 if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                 {
-                    Toast.makeText(getActivity(), "Please turn on your location!", Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(), "Please turn on your location!", Toast.LENGTH_LONG).show();
 
                 }
                 else startActivity(new Intent(getActivity(), RoadConditions.class));
