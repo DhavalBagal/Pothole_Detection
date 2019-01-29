@@ -28,6 +28,8 @@
     <string name="latitude">Latitude :</string>
     <string name="longitude">Longitude :</string>
 
+    <string name="status">Status : Lodged</string>
+
     <string name="date">Date :</string>
 
     <string name="description_hint"> Please enter the complete description of the complaint. Also enter the nearby landmarks. </string>

@@ -17,7 +17,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder>{
 
     private Context context;
     private List<NewsArticle> newslist;
-    DatabaseReference newsref;
     NewsArticle news;
 
     public NewsAdapter(@NonNull Context context, List<NewsArticle> newslist) {
@@ -35,9 +34,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder>{
     @Override
     public void onBindViewHolder(@NonNull NewsAdapter.NewsHolder newsHolder, int i)
     {
-        NewsArticle article = newslist.get(i);
-        newsHolder.headline.setText(article.headline);
-        newsHolder.timestamp.setText(article.timestamp);
+        news = newslist.get(i);
+        newsHolder.headline.setText(news.headline);
+        newsHolder.timestamp.setText(news.timestamp);
     }
 
     @Override

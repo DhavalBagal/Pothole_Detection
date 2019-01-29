@@ -218,7 +218,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
 
                     try {
                         addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss");
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         SharedPreferences userDetails = getApplicationContext().getSharedPreferences("MyPrefs", MODE_PRIVATE);
 

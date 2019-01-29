@@ -1,11 +1,14 @@
 package com.android.citygroom;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -42,7 +45,7 @@ public class AfterloginSection extends AppCompatActivity {
         String user_id = intent.getStringExtra("user_email");
 
         final TextView section_name = (TextView) findViewById(R.id.section_name);
-        section_name.setText("ISSUES");
+        section_name.setText("COMPLAINT TYPES");
 
         issuesFragment = new IssuesSection();
         complaintsFragment = new ComplaintsSection();
@@ -58,7 +61,7 @@ public class AfterloginSection extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch(tab.getPosition())
                 {
-                    case 0 : section_name.setText("ISSUES"); loadFragment(issuesFragment); break;
+                    case 0 : section_name.setText("COMPLAINT TYPES"); loadFragment(issuesFragment); break;
                     case 1 : section_name.setText("YOUR COMPLAINTS"); loadFragment(complaintsFragment); break;
                     case 2 : section_name.setText("STREET RIDE"); loadFragment(streetrideFragment); break;
                     case 3 : section_name.setText("SETTINGS"); loadFragment(settingsFragment); break;
@@ -89,11 +92,29 @@ public class AfterloginSection extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        super.onBackPressed();
-        SharedPreferences sharedpreferences = getSharedPreferences(SigninSection.MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.clear();
-        editor.commit();
+        AlertDialog.Builder builder = new AlertDialog.Builder(AfterloginSection.this);
+
+        builder.setMessage("Are you sure you want to log out?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        SharedPreferences sharedpreferences = getSharedPreferences(SigninSection.MyPREFERENCES, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.clear();
+                        editor.commit();
+                        finish();
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+
     }
 
     private boolean loadFragment(Fragment fragment)
@@ -107,4 +128,5 @@ public class AfterloginSection extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         return true;
     }
+
 }

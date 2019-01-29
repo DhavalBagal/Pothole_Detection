@@ -188,7 +188,7 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                     {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss");
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         ts = sdf.format(timestamp);
 
@@ -198,16 +198,16 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
                         width = String.valueOf(width_txtbx.getText());
                         area = String.valueOf(area_txtbx.getText());
 
-                        Complaint comp = new Complaint(user_email, comp_category, ts, "0", status, length, width, area,
-                                "0", severity, descrip, location_name, latstring, longstring, loc_category);
+
 
                         String id = latstring+" "+longstring+" "+user_email;
                         id = id.replace(".",",");
 
                         if(!dataSnapshot.child(id).exists())
                         {
-                            rootref.child(id).setValue(comp);
-                            Map<String, String> map = new HashMap<>();;
+
+                            Map<String, String> map = new HashMap<>();
+
                             map.put("Location-1 : ",loc1_name);
                             map.put("Location-2 : ",loc2_name);
                             map.put("Location-3 : ",loc3_name);
@@ -224,7 +224,12 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
                             map.put("Location-14 : ",loc14_name);
                             map.put("Location-15 : ",loc15_name);
 
-                            rootref.child(id).child("Nearby_Locations").setValue(map);
+                            Complaint comp = new Complaint(user_email, comp_category, ts, "0", status, length, width, area,
+                                    "0", severity, descrip, location_name, latstring, longstring, loc_category, map);
+
+                            rootref.child(id).setValue(comp);
+
+                            //rootref.child(id).child("Nearby_Locations").setValue(map);
 
 
                         }
