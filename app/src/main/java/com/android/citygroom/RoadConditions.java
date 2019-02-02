@@ -1,5 +1,7 @@
 package com.android.citygroom;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +18,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -58,7 +62,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
 
 
     private TextView lat, lng;
-    Location location;
+    Location loc;
     private LocationManager locationManager;
 
     private SensorManager sensorMan;
@@ -72,8 +76,9 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
     float depth;
     TextView bumps;
     int bump;
+    String id;
 
-    DatabaseReference rootref;
+    DatabaseReference rootref, comprootref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +101,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
         bumps = findViewById(R.id.no_of_bumps);
 
         rootref = FirebaseDatabase.getInstance().getReference("BUMPS");
-
-
+        comprootref = FirebaseDatabase.getInstance().getReference("COMPLAINTS");
 
     }
 
@@ -113,6 +117,8 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMinZoomPreference(6.0f);
+        mMap.setMaxZoomPreference(14.0f);
 
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
@@ -133,7 +139,6 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
                         }
 
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -180,11 +185,42 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onLocationChanged(Location location)
     {
-        mMap.animateCamera(CameraUpdateFactory.zoomBy(30));
+        String latitude, longitude;
+        //loc = location;
 
-        if(client != null){
-            LocationServices.FusedLocationApi.removeLocationUpdates(client,this);
-        }
+        SharedPreferences userDetails = getApplicationContext().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String user_email = userDetails.getString("UserId_Email","default");
+
+        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
+
+        DecimalFormat df= new DecimalFormat("#0.00000");
+
+        latitude = df.format(location.getLatitude())+"";
+        longitude = df.format(location.getLongitude())+"";
+        id = latitude + " " + longitude + " " + user_email;
+        id = id.replace(".",",");
+
+        comprootref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(id).exists() && dataSnapshot.child(id).child("Complaint_Category").equals("Potholes"))
+                {
+                    if(depth>0.01 && depth<0.15 && loc!=null)
+                    {
+                        comprootref.child(id).child("Depth").setValue(depth);
+                    }
+                    else if (depth < 0.01)
+                    {
+                        comprootref.child(id).child("Status").setValue("Might be Resolved");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -205,19 +241,21 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
             if (delta > 10) {
                 current_time = currentTimeMillis();
                 dt = current_time - last_time;
-                depth = (float) ((mAccelCurrent + mAccelLast) * Math.pow(dt, 2)) / 4;
-                depth = depth / 1000000;
-                if (depth < 0.1)
+                depth = ((float) ((mAccelCurrent + mAccelLast) * Math.pow(dt, 2)) / 4)/ 1000000;
+
+
+                if (depth < 0.15 )
                 {
                     List<Address> addresses;
                     final String ts, location_name, latitude, longitude, user_email, loc_category;
                     bump = bump + 1;
-                    location = LocationServices.FusedLocationApi.getLastLocation(client);
+
+                    loc = LocationServices.FusedLocationApi.getLastLocation(client);
 
                     Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
                     try {
-                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss");
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         SharedPreferences userDetails = getApplicationContext().getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -230,8 +268,8 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
                         loc_category = getLocCategory(location_name);
                         DecimalFormat df= new DecimalFormat("#0.00000");
 
-                        latitude = df.format(location.getLatitude())+"";
-                        longitude = df.format(location.getLongitude())+"";
+                        latitude = df.format(loc.getLatitude())+"";
+                        longitude = df.format(loc.getLongitude())+"";
 
                         rootref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -266,9 +304,6 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
                     }
 
                 }
-
-
-
                 bumps.setText(bump+"");
 
             } else
@@ -303,7 +338,29 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
         return "";
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RoadConditions.this);
 
+        builder.setMessage("Are you sure you want to end the trip?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                        //startActivity(new Intent(RoadConditions.this, AfterloginSection.class));
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+    }
 
 
     @Override

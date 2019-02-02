@@ -446,26 +446,6 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
             loc14_name = geocoder.getFromLocation(loc14.latitude, loc14.longitude,1).get(0).getAddressLine(0);
             loc15_name = geocoder.getFromLocation(loc15.latitude, loc15.longitude,1).get(0).getAddressLine(0);
 
-            /*loc1_category = getLocCategory(loc1_name);
-            loc2_category = getLocCategory(loc2_name);
-            loc3_category = getLocCategory(loc3_name);
-
-            loc4_category = getLocCategory(loc4_name);
-            loc5_category = getLocCategory(loc5_name);
-            loc6_category = getLocCategory(loc6_name);
-
-            loc7_category = getLocCategory(loc7_name);
-            loc8_category = getLocCategory(loc8_name);
-            loc9_category = getLocCategory(loc9_name);
-
-            loc10_category = getLocCategory(loc10_name);
-            loc11_category = getLocCategory(loc11_name);
-            loc12_category = getLocCategory(loc12_name);
-
-            loc13_category = getLocCategory(loc13_name);
-            loc14_category = getLocCategory(loc14_name);
-            loc15_category = getLocCategory(loc15_name);*/
-
         } catch (IOException e) {
             e.printStackTrace();
         }
