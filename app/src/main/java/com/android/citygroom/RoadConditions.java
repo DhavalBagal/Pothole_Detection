@@ -118,7 +118,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMinZoomPreference(6.0f);
-        mMap.setMaxZoomPreference(14.0f);
+        mMap.setMaxZoomPreference(30.0f);
 
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
@@ -193,7 +193,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
 
         mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
 
-        DecimalFormat df= new DecimalFormat("#0.00000");
+        DecimalFormat df= new DecimalFormat("#0.0000");
 
         latitude = df.format(location.getLatitude())+"";
         longitude = df.format(location.getLongitude())+"";
@@ -203,7 +203,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
         comprootref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(id).exists() && dataSnapshot.child(id).child("Complaint_Category").equals("Potholes"))
+                if(dataSnapshot.child(id).exists())
                 {
                     if(depth>0.01 && depth<0.15 && loc!=null)
                     {
@@ -238,7 +238,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
             mAccelCurrent = (float) (Math.sqrt(x * x + y * y + z * z));
             final float delta = Math.abs(mAccelCurrent - mAccelLast);
 
-            if (delta > 10) {
+            if (delta > 4) {
                 current_time = currentTimeMillis();
                 dt = current_time - last_time;
                 depth = ((float) ((mAccelCurrent + mAccelLast) * Math.pow(dt, 2)) / 4)/ 1000000;
@@ -266,7 +266,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
                         location_name = addresses.get(0).getAddressLine(0);
 
                         loc_category = getLocCategory(location_name);
-                        DecimalFormat df= new DecimalFormat("#0.00000");
+                        DecimalFormat df= new DecimalFormat("#0.0000");
 
                         latitude = df.format(loc.getLatitude())+"";
                         longitude = df.format(loc.getLongitude())+"";
@@ -275,7 +275,7 @@ public class RoadConditions extends FragmentActivity implements OnMapReadyCallba
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                             {
-                                String bumpid = latitude+" "+longitude;
+                                String bumpid = latitude+" "+longitude+" "+user_email;
                                 bumpid = bumpid.replace(".",",");
 
                                 Bumps bump = new Bumps(bumpid, user_email, depth+"",

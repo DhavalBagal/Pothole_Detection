@@ -3,6 +3,7 @@ package com.android.citygroom;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -47,7 +48,7 @@ public class SettingsSection extends Fragment {
                                SharedPreferences.Editor editor = sharedpreferences.edit();
                                editor.clear();
                                editor.commit();
-                               getActivity().finish();
+                               startActivity(new Intent(getActivity(), MainActivity.class));
 
                            }
                        })

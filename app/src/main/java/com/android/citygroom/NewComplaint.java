@@ -107,9 +107,9 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_complaint);
 
-
+        
         //this is the url where you want to send the request
-        url = "http://192.168.0.101:5000/getparams";
+        url = "http://192.168.0.102:5000/getparams";
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.logo);
@@ -229,9 +229,13 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
 
                             rootref.child(id).setValue(comp);
 
-                            //rootref.child(id).child("Nearby_Locations").setValue(map);
+                            Toast.makeText(NewComplaint.this, "Complaint registered successfully!!", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(NewComplaint.this, AfterloginSection.class));
 
-
+                        }
+                        else
+                        {
+                            Toast.makeText(NewComplaint.this, "Complaint already exists!!", Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -242,8 +246,7 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
 
-                Toast.makeText(NewComplaint.this, "Complaint registered successfully!!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(NewComplaint.this, AfterloginSection.class));
+
 
             }
         });
@@ -411,7 +414,7 @@ public class NewComplaint extends AppCompatActivity implements OnMapReadyCallbac
         LatLng loc14 = new LatLng(latitude, longitude+0.001);
         LatLng loc15 = new LatLng(latitude+0.001, longitude+0.001);
 
-        DecimalFormat df= new DecimalFormat("#0.00000");
+        DecimalFormat df= new DecimalFormat("#0.0000");
         latstring = df.format(latitude)+"";
         longstring = df.format(longitude)+"";
 
